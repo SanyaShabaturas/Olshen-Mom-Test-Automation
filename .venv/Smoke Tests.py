@@ -84,25 +84,39 @@ class filter_for_regnant_and_nursing_mothers(auto_values):
             By.CSS_SELECTOR, "h1[class*='main-h']")))
         check_text_assert = check_text.text
         assert_4 = "Каталог Розпродаж"
-        assert check_text_assert == assert4, f"expected {assert_4} got {check_text_assert}"
+        assert check_text_assert == assert_4, f"expected {assert_4} got {check_text_assert}"
         print("test_4_seasonal_sale", {check_text_assert})
 
 class input_search(auto_values):
-    def test_1_filter_nursing_bra(self):
+    def test_5_filter_nursing_bra(self):
         input_search_click = self.driver.find_element(
-        By.CSS_SELECTOR, "input[class*='search__input']")
+            By.CSS_SELECTOR, "input[class*='search__input']")
         input_search_click.click()
         input_search_click.send_keys("Бюстгальтер для годування")
-        WebDriverWait(self.driver, 10).until(
-            EC.presence_of_all_elements_located((By.CSS_SELECTOR, "svg[class*='icon icon--search'")))
+        time.sleep(1)
         input_search_click.send_keys(Keys.ENTER)
-        time.sleep(2)
-        # check_text = WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((
-        #     By.CSS_SELECTOR, "h1[class*='main-h']")))
-        # check_text_assert = check_text.text
-        # assert_5 = "Результати пошуку «Бюстгальтер для годування»"
-        # assert check_text_assert == assert_5, f"expected {assert_5} got {check_text_assert}"
-        # print("test_1_filter_nursing_bra", {check_text_assert})
+        check_text = WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((
+            By.CSS_SELECTOR, "h1[id*='j-catalog-header']")))
+        check_text_assert = check_text.text
+        assert_5 = "Результати пошуку «Бюстгальтер для годування»"
+        assert check_text_assert == assert_5, f"expected {assert_5} got {check_text_assert}"
+        print("test_5_seasonal_sale", {check_text_assert})
+
+    def test_6_language(self):
+        button_language = self.driver.find_element(
+            By.CSS_SELECTOR, "div[class*='lang-menu__button']")
+        action = ActionChains(self.driver)
+        action.move_to_element(button_language).perform()
+        button_language = WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((
+            By.CSS_SELECTOR, "a[href='/ru/']")))
+        button_language.click()
+        check_text = self.driver.find_element(By.CSS_SELECTOR, "div[class*='h2']")
+        check_text_assert = check_text.text
+        assert_6 = "Популярные категории"
+        assert check_text_assert == assert_6, f"expected {assert_6} got {check_text_assert}"
+        print("test_6_seasonal_sale (expected ru - language) - ", {check_text_assert})
+
+
 
 
 
@@ -113,14 +127,13 @@ class input_search(auto_values):
 
 if __name__ == "__main__":
         suite = unittest.TestSuite()
-        # suite.addTest(filter_for_regnant_and_nursing_mothers('test_1_sets_for_the_maternity_hospital'))
-        # suite.addTest(filter_for_regnant_and_nursing_mothers('test_2_sets_for_newborns'))
-        # suite.addTest(filter_for_regnant_and_nursing_mothers('test_3_sets_for_kids'))
-        # suite.addTest(filter_for_regnant_and_nursing_mothers('test_4_seasonal_sale'))
+        suite.addTest(filter_for_regnant_and_nursing_mothers('test_1_sets_for_the_maternity_hospital'))
+        suite.addTest(filter_for_regnant_and_nursing_mothers('test_2_sets_for_newborns'))
+        suite.addTest(filter_for_regnant_and_nursing_mothers('test_3_sets_for_kids'))
+        suite.addTest(filter_for_regnant_and_nursing_mothers('test_4_seasonal_sale'))
+        suite.addTest(input_search('test_5_filter_nursing_bra'))
+        suite.addTest(input_search('test_6_language'))
 
-        suite.addTest(input_search('test_1_filter_nursing_bra'))
-        # suite.addTest(Password_value_tests('test_6_register_user_with_invalid_name_and_password'))
-        # suite.addTest(Password_value_tests('test_7_register_user_with_invalid_name_and_password_and_email'))
         runner = unittest.TextTestRunner()
         runner.run(suite)
 
